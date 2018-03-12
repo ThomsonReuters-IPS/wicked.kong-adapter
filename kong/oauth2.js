@@ -650,7 +650,7 @@ function authorizeConsumerImplicitGrant(app, oauthInfo, callback) {
         return callback(buildError('The API ' + oauthInfo.inputData.api_id + ' is not configured for the OAuth2 implicit grant.'), 400);
 
     const requestParameters = getAuthorizeRequest(app, 'token', oauthInfo);
-
+    debug(requestParameters);
     // Jetzt kommt der spannende Moment, wo der Frosch ins Wasser rennt
     request.post(requestParameters, function (err, res, body) {
         debug('Kong authorize response:');
