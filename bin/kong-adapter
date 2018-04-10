@@ -38,7 +38,8 @@ app.kongAvailable = false;
 
 const wickedOptions = {
     userAgentName: 'wicked.portal-kong-adapter',
-    userAgentVersion: utils.getVersion()
+    userAgentVersion: utils.getVersion(),
+    doNotPollConfigHash: true
 };
 
 async.series([
