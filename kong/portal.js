@@ -508,7 +508,7 @@ function injectKeyAuth(app, api) {
         name: 'key-auth',
         enabled: true,
         config: {
-            hide_credentials: true,
+            hide_credentials: false,
             key_names: [app.kongGlobals.api.headerName]
         }
     });
