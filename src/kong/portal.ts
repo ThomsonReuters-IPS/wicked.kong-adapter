@@ -4,7 +4,7 @@ const async = require('async');
 const { debug, info, warn, error } = require('portal-env').Logger('kong-adapter:portal');
 import * as utils from './utils';
 import * as wicked from 'wicked-sdk';
-import { Callback, WickedApplication, WickedAuthServer, WickedError, KongPluginRequestTransformer, KongPluginCors, WickedApiPlanCollection, WickedApiPlan, WickedApiCollection, WickedApi, KongApiConfig, KongPluginRateLimiting, WickedSessionStoreType } from 'wicked-sdk';
+import { Callback, WickedApplication, WickedAuthServer, WickedError, KongPluginRequestTransformer, KongPluginCors, WickedApiPlanCollection, WickedApiPlan, WickedApiCollection, WickedApi, KongApiConfig, KongPluginRateLimiting, WickedSessionStoreType, WickedApiSettings } from 'wicked-sdk';
 import { ConsumerInfo, ApplicationData, ApiDescriptionCollection, ApiDescription } from './types';
 
 const MAX_PARALLEL_CALLS = 10;
@@ -574,23 +574,28 @@ function injectOAuth2Auth(api: ApiDescription): void {
     if (api.bundle)
         globalCredentials = true;
 
+    const pluginConfig: any = {
+        scopes: scopes,
+        mandatory_scope: mandatory_scope,
+        token_expiration: token_expiration,
+        enable_authorization_code: enable_authorization_code,
+        enable_client_credentials: enable_client_credentials,
+        enable_implicit_grant: enable_implicit_grant,
+        enable_password_grant: enable_password_grant,
+        hide_credentials: hide_credentials,
+        accept_http_if_already_terminated: true,
+        global_credentials: globalCredentials
+    }
+
+    // Don't specify if not set; defaults to 2 weeks
+    if (api.settings.refresh_token_ttl)
+        pluginConfig.refresh_token_ttl = api.settings.refresh_token_ttl;
+
     plugins.push({
         name: 'oauth2',
         enabled: true,
-        config: {
-            scopes: scopes,
-            mandatory_scope: mandatory_scope,
-            token_expiration: token_expiration,
-            enable_authorization_code: enable_authorization_code,
-            enable_client_credentials: enable_client_credentials,
-            enable_implicit_grant: enable_implicit_grant,
-            enable_password_grant: enable_password_grant,
-            hide_credentials: hide_credentials,
-            accept_http_if_already_terminated: true,
-            global_credentials: globalCredentials
-        }
-    });
-    // API_BUNDLE: Is this API part of a bundle? If so, use the bundle name as the group name
+        config: pluginConfig
+    });    // API_BUNDLE: Is this API part of a bundle? If so, use the bundle name as the group name
     let groupName = api.bundle ? api.bundle : api.id;
     debug(`injectOAuth2Auth: Using ACL group name ${groupName}`);
     plugins.push({
