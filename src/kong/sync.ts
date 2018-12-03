@@ -384,13 +384,13 @@ function assembleConsumerTodoLists(portalConsumers: ConsumerInfo[], kongConsumer
     // Speed up consumer checking to O(n) instead of O(n^2)
     for (let i = 0; i < kongConsumers.length; ++i) {
         const c = kongConsumers[i];
-        kongConsumerMap.set(c.consumer.username, c);
+        kongConsumerMap.set(c.consumer.username.toLowerCase(), c);
     }
 
     for (let i = 0; i < portalConsumers.length; ++i) {
         let portalConsumer = portalConsumers[i];
         let kongConsumer;
-        const u = portalConsumer.consumer.username;
+        const u = portalConsumer.consumer.username.toLowerCase();
         if (kongConsumerMap.has(u))
             kongConsumer = kongConsumerMap.get(u);
         if (!kongConsumer) {
@@ -409,13 +409,13 @@ function assembleConsumerTodoLists(portalConsumers: ConsumerInfo[], kongConsumer
             kongConsumer: kongConsumer
         });
 
-        handledKongConsumers[kongConsumer.consumer.username] = true;
+        handledKongConsumers[kongConsumer.consumer.username.toLowerCase()] = true;
     }
 
     // Mop up?
     for (let i = 0; i < kongConsumers.length; ++i) {
         let kongConsumer = kongConsumers[i];
-        if (!handledKongConsumers[kongConsumer.consumer.username]) {
+        if (!handledKongConsumers[kongConsumer.consumer.username.toLowerCase()]) {
             debug('Username "' + kongConsumer.consumer.username + "' found in Kong, but not in portal, delete needed.");
             // Superfluous consumer; we control them
             deleteList.push({
