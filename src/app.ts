@@ -79,10 +79,10 @@ app.get('/ping', function (req, res, next) {
         health.healthy = 2;
         health.message = msg;
         res.status(503);
-    } else if (!wicked.isApiReachable()) {
-        health.healthy = 0;
-        health.message = 'The wicked API is currently not available';
-        res.status(200);
+    // } else if (!wicked.isApiReachable()) {
+    //     health.healthy = 0;
+    //     health.message = 'The wicked API is currently not available';
+    //     res.status(200);
     } else if (!utils.isKongAvailable()) {
         health.healthy = 0;
         health.message = 'Kong is currently not available';
