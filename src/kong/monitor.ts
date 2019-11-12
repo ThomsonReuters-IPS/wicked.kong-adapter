@@ -59,9 +59,9 @@ var _pingInProgress = false;
 function pingKong(callback) {
     debug('pingKong()');
 
-    if (!wicked.isApiReachable()) {
-        warn(`Monitor: wicked API is currently not reachable.`);
-    }
+    // if (!wicked.isApiReachable()) {
+    //     warn(`Monitor: wicked API is currently not reachable.`);
+    // }
 
     if (_pingInProgress) {
         debug('pingKong() There already is a ping in progress.');
